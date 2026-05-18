@@ -8,9 +8,9 @@ const QUICK_ADDS = [
   { name: "Siggis Vanilla", protein: 16, carbs: 9, fat: 0, calories: 100 },
   { name: "Chomps Stick", protein: 9, carbs: 0, fat: 6, calories: 90 },
   { name: "RX Bar Choc Sea Salt", protein: 12, carbs: 23, fat: 8, calories: 210 },
-  { name: "Cottage Cheese 1/2c", protein: 14, carbs: 4, fat: 2, calories: 90 },
+  { name: "Cottage Cheese half cup", protein: 14, carbs: 4, fat: 2, calories: 90 },
   { name: "Chicken Sausage", protein: 14, carbs: 1, fat: 7, calories: 120 },
-  { name: "Strawberries 1c", protein: 1, carbs: 11, fat: 0, calories: 45 },
+  { name: "Strawberries 1 cup", protein: 1, carbs: 11, fat: 0, calories: 45 },
   { name: "Protein Shake", protein: 25, carbs: 5, fat: 2, calories: 130 },
 ];
 
@@ -26,14 +26,14 @@ export default function App() {
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("mt-entries-" + todayKey());
+      const saved = localStorage.getItem("mt-" + todayKey());
       if (saved) setEntries(JSON.parse(saved));
     } catch(e) {}
   }, []);
 
   useEffect(() => {
     try {
-      localStorage.setItem("mt-entries-" + todayKey(), JSON.stringify(entries));
+      localStorage.setItem("mt-" + todayKey(), JSON.stringify(entries));
     } catch(e) {}
   }, [entries]);
 
@@ -72,19 +72,19 @@ export default function App() {
 
       <div style={{ background: "#0f172a", borderRadius: 12, padding: 16, marginBottom: 16, display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 8, textAlign: "center" }}>
         <div>
-          <div style={{ fontSize: 22, fontWeight: 800, color: "#22d3ee" }}>{totals.calories}</div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: "#22d3ee" }}>{totals.calories}</div>
           <div style={{ fontSize: 10, color: "#64748b" }}>of {CALORIE_GOAL} kcal</div>
         </div>
         <div>
-          <div style={{ fontSize: 22, fontWeight: 800, color: "#22d3ee" }}>{Math.round(totals.protein)}g</div>
-          <div style={{ fontSize: 10, color: "#64748b" }}>of {GOALS.protein}g protein</div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: "#22d3ee" }}>{Math.round(totals.protein)}g</div>
+          <div style={{ fontSize: 10, color: "#64748b" }}>of {GOALS.protein}g pro</div>
         </div>
         <div>
-          <div style={{ fontSize: 22, fontWeight: 800, color: "#f59e0b" }}>{Math.round(totals.carbs)}g</div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: "#f59e0b" }}>{Math.round(totals.carbs)}g</div>
           <div style={{ fontSize: 10, color: "#64748b" }}>of {GOALS.carbs}g carbs</div>
         </div>
         <div>
-          <div style={{ fontSize: 22, fontWeight: 800, color: "#a78bfa" }}>{Math.round(totals.fat)}g</div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: "#a78bfa" }}>{Math.round(totals.fat)}g</div>
           <div style={{ fontSize: 10, color: "#64748b" }}>of {GOALS.fat}g fat</div>
         </div>
       </div>
@@ -120,4 +120,23 @@ export default function App() {
 
       <div>
         <div style={{ fontSize: 11, color: "#64748b", marginBottom: 8, textTransform: "uppercase", letterSpacing: 2 }}>Today's Log</div>
-        {entries.length === 0 && <div style={{ color: "#475569", fontSize: 13, textAlign: "center", padding: 24 }}>No food​​​​​​​​​​​​​​​​
+        {entries.length === 0 && <div style={{ color: "#475569", fontSize: 13, textAlign: "center", padding: 24 }}>No food logged yet</div>}
+        {entries.map((e, i) => (
+          <div key={e.id || i} style={{ background: "#0f172a", borderRadius: 10, padding: "12px 14px", marginBottom: 8, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 4 }}>{e.name}</div>
+              <div style={{ display: "flex", gap: 10 }}>
+                <span style={{ fontSize: 11, color: "#22d3ee" }}>{e.protein}g P</span>
+                <span style={{ fontSize: 11, color: "#f59e0b" }}>{e.carbs}g C</span>
+                <span style={{ fontSize: 11, color: "#a78bfa" }}>{e.fat}g F</span>
+                <span style={{ fontSize: 11, color: "#64748b" }}>{e.calories} kcal</span>
+              </div>
+            </div>
+            <button onClick={() => setEntries(prev => prev.filter(x => x.id !== e.id))}
+              style={{ background: "transparent", border: "none", color: "#475569", cursor: "pointer", fontSize: 18 }}>x</button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
